@@ -1,10 +1,22 @@
 import Todo from "./components/todo";
 import Testing from "./components/testing";
 import Done from './components/done/index';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { parse, stringify } from "postcss";
 
 function App() {
   const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    const savedTasks = localStorage.getItem("tasks");
+    if (savedTasks) {
+      setTasks(JSON.parse(savedTasks));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   const addTask = (task) => {
     if (task.trim()) {
@@ -47,13 +59,13 @@ function App() {
         sendForTesting={sendForTesting}
       />
       <Testing
-        tasks={tasks} 
+        tasks={tasks}
         taskApproved={taskApproved}
         taskRejected={taskRejected}
-        />
-      <Done 
-      tasks={tasks} 
-      removeTask={removeTask}
+      />
+      <Done
+        tasks={tasks}
+        removeTask={removeTask}
       />
     </div>
   );
